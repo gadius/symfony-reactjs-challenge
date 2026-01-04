@@ -11,6 +11,10 @@ interface ErrorResponse {
   error: string;
 }
 
+interface sumElement {
+  id: number;
+}
+
 function App() {
   const URL = 'http://localhost:8080/api/sum';
   const SHOW_BACKEND_ERRORS = true; // For demonstration, bypassing frontend validation to showcase backend error handling
@@ -62,10 +66,14 @@ function App() {
         }),
       });
       
-      const data: SumResponse | ErrorResponse = await response.json();
+      // const data: SumResponse | ErrorResponse = await response.json();
+      const data = await response.json();
 
       if (response.ok) {
-        setResult((data as SumResponse).sum);
+        // const new_data = {...data.pop()} as SumResponse;
+        const new_data = data.filter( (e : sumElement) => e.id == 5);
+
+        setResult((new_data as SumResponse).sum);
       } else {
         setError((data as ErrorResponse).error || 'An error occurred');
       }

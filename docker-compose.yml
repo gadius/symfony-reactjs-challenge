@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   nginx:
     image: nginx:alpine
@@ -30,9 +28,32 @@ services:
     environment:
       - APP_ENV=dev
       - APP_DEBUG=1
+      - DATABASE_URL=postgresql://symfony_user:symfony_password@postgres:5432/symfony_db?serverVersion=17&charset=utf8
+    depends_on:
+      - postgres
+    networks:
+      - symfony-network
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: symfony-postgres
+    labels:
+      - "com.docker.compose.project=Gad-Sanchez-Symfony-Reactjs-Challenge"
+      - "description=PostgreSQL database for Symfony application"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: symfony_db
+      POSTGRES_USER: symfony_user
+      POSTGRES_PASSWORD: symfony_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - symfony-network
 
 networks:
   symfony-network:
     driver: bridge
+
+volumes:
+  postgres_data:
